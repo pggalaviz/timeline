@@ -3,6 +3,8 @@ defmodule Timeline.TradeData do
   Fetches Data from World Trading Data
   """
   require Logger
+  alias Timeline.TradeData.Cache
+
   @history_url "https://api.worldtradingdata.com/api/v1/history_multi_single_day"
   @actual_url "https://api.worldtradingdata.com/api/v1/stock"
   @api_token "&api_token=pEYXuFI0Ncu29s3lFIab5TrY7ZqQwQK38gAFs0Adr820zR92sJtN57A25tVg"
@@ -94,7 +96,8 @@ defmodule Timeline.TradeData do
         end)
         Map.merge(item, %{"actual" => s["price"]})
       end)
-    {:ok, data}
+    uuid = Cache.add(data)
+    {:ok, %{url: uuid, data: data}}
   end
 
   defp _add_actual_price(_, _ ) do

@@ -9,7 +9,8 @@ defmodule Timeline.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      TimelineWeb.Endpoint
+      TimelineWeb.Endpoint,
+      Timeline.TradeData.Cache
       # Starts a worker by calling: Timeline.Worker.start_link(arg)
       # {Timeline.Worker, arg},
     ]

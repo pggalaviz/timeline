@@ -24,6 +24,6 @@ defmodule TimelineWeb.PageControllerTest do
   test "POST /api", %{conn: conn} do
     conn = post(conn, "/api", @params)
     assert %{"data" => data} = json_response(conn, 200)
-    assert Kernel.length(data) == 2
+    assert Kernel.length(data["data"]) == 2
   end
 end
