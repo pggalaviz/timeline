@@ -75,7 +75,7 @@
           Results for date: <b>{{ form.date }}</b>
         </p>
         <ul>
-          <li v-for="item in result.data.data.data" class="mb-lg">
+          <li v-for="item in result.data.data" class="mb-lg">
             <h4>{{ item.name }}</h4>
             <p>
               Closed at: <b>${{ item.close }}</b> - <b>{{ item.total }}</b> stock for <b>${{ item.amount }}</b>.
@@ -88,11 +88,11 @@
               Profit of: <b>${{ get_profit(item.total, item.actual, item.amount) }}</b>
             </p>
           </li>
-          <div class="mt-md">
+          <div v-if="result.data.url" class="mt-md">
             <h3>Request URL</h3>
             You can request again your data with this URL:
             <br>
-            <b>{{ get_url(result.data.data.url) }}</b>
+            <b>{{ get_url(result.data.url) }}</b>
           </div>
         </ul>
       </div>
@@ -160,7 +160,7 @@ export default {
         axios.post('/', this.form)
           .then((response) => {
             console.log(response)
-            this.result = response
+            if (response.data) this.result = response.data
           })
           .catch((err) => {
             console.error(err)
