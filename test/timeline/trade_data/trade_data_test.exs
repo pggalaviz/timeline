@@ -11,6 +11,10 @@ defmodule Timeline.TradeDataTest do
       %{
         "name" => "GOOG",
         "percentage" => 50
+      },
+      %{
+        "name" => "VOD",
+        "percentage" => 50
       }
     ],
     "date" => "2015-01-08",

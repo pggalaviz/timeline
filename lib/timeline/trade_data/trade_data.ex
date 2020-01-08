@@ -15,7 +15,10 @@ defmodule Timeline.TradeData do
       end)
       |> Enum.reject(&is_nil/1)
       |> Enum.uniq()
+      |> Enum.chunk_every(2, 2, :discard)
+      |> List.first()
       |> Enum.join(",")
+
 
     history_url = @history_url <> "?symbol=#{parsed_symbols}&date=#{date}" <> @api_token
     Logger.info("HISTORY_URL: #{inspect(history_url)}")
