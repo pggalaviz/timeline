@@ -1,5 +1,11 @@
 # Timeline
 
+A basic Phoenix app that fetches stock data from `worldtradingdata.com` to compare
+assets value over time, it returns past vs actual value of stock as well as
+profit made given a money amount allocated to a specific stock.
+
+Runs on Phoenix and Vue.js.
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
@@ -7,8 +13,6 @@ To start your Phoenix server:
   * Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ## Learn more
 
