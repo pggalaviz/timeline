@@ -71,16 +71,25 @@
     <div v-if="result" class="mt-lg">
       <h3>Result:</h3>
       <div class="mb-md">
-        On: <b>{{ form.date }}</b>
+        <p class="text-lg">
+          Results for date: <b>{{ form.date }}</b>
+        </p>
         <ul>
-          <li v-for="item in result.data.data">
-            <b>{{ item.name }}:</b> closed at: ${{ item.close }} - {{ item.total }} stock for ${{ item.amount }}
+          <li v-for="item in result.data.data" class="mb-lg">
+            <h4>{{ item.name }}</h4>
+            <p>
+              Closed at: <b>${{ item.close }}</b> - <b>{{ item.total }}</b> stock for <b>${{ item.amount }}</b>.
+            </p>
+            <p>
+              Today stock price: <b>${{item.actual}}</b>
+              <br>
+              Total value now: <b>${{ get_total(item.total, item.actual) }}</b>
+              <br>
+              Profit of: <b>${{ get_profit(item.total, item.actual, item.amount) }}</b>
+            </p>
           </li>
         </ul>
       </div>
-      <pre>
-        {{ result.data.data }}
-      </pre>
     </div>
   </div>
 </template>
@@ -111,6 +120,15 @@ export default {
       this.error = null
       this.result = null
       this.form.symbols = []
+    },
+    round(value, decimals) {
+      return Number(Math.round(value+'e2')+'e-2')
+    },
+    get_total(total, actual) {
+      return this.round(total * actual)
+    },
+    get_profit(total, actual, amount) {
+      return this.round(this.get_total(total, actual) - amount)
     },
 
     submit () {
