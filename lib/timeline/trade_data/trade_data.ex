@@ -45,6 +45,14 @@ defmodule Timeline.TradeData do
         {:error, "An error ocurred fetching data!"}
     end
   end
+
+  def get_data(%{"id" => id}) when is_binary(id) do
+    case Cache.get(id) do
+      {:ok, data} -> {:ok, data}
+      _ -> {:error, "An error ocurred fetching data!"}
+    end
+  end
+
   def get_data(_), do: {:error, "Can't process that request."}
 
   # =================

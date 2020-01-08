@@ -172,6 +172,24 @@ export default {
         this.loading = false
       })
     }
+  },
+  mounted () {
+    var vars = {}
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+      vars[key] = value
+    })
+    if (vars.id) {
+      axios.post('/', {id: vars.id})
+        .then((response) => {
+          console.log(response)
+          this.result = response
+        })
+        .catch((err) => {
+          console.error(err)
+          if (err.data) return this.error = err.data.message
+          this.error = err
+        })
+    }
   }
 }
 </script>
