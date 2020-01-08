@@ -75,7 +75,7 @@
           Results for date: <b>{{ form.date }}</b>
         </p>
         <ul>
-          <li v-for="item in result.data.data" class="mb-lg">
+          <li v-for="item in result.data.data.data" class="mb-lg">
             <h4>{{ item.name }}</h4>
             <p>
               Closed at: <b>${{ item.close }}</b> - <b>{{ item.total }}</b> stock for <b>${{ item.amount }}</b>.
@@ -88,6 +88,12 @@
               Profit of: <b>${{ get_profit(item.total, item.actual, item.amount) }}</b>
             </p>
           </li>
+          <div class="mt-md">
+            <h3>Request URL</h3>
+            You can request again your data with this URL:
+            <br>
+            <b>{{ get_url(result.data.data.url) }}</b>
+          </div>
         </ul>
       </div>
     </div>
@@ -129,6 +135,9 @@ export default {
     },
     get_profit(total, actual, amount) {
       return this.round(this.get_total(total, actual) - amount)
+    },
+    get_url(url) {
+      return window.location.href + '?id=' + url
     },
 
     submit () {
