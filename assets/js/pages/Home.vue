@@ -1,6 +1,8 @@
 <template>
   <div id="home">
     <form class="box" @submit.prevent="submit">
+      <p class="text-lg">You can add up to 2 selections and its percentage.</p>
+
       <div v-if="error" class="alert alert-danger mb-lg">
         {{ error }}
       </div>

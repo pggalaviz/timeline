@@ -4,6 +4,7 @@ defmodule Timeline.TradeData do
   """
   require Logger
   @history_url "https://api.worldtradingdata.com/api/v1/history_multi_single_day"
+  @actual_url "https://api.worldtradingdata.com/api/v1/stock"
   @api_token "&api_token=pEYXuFI0Ncu29s3lFIab5TrY7ZqQwQK38gAFs0Adr820zR92sJtN57A25tVg"
 
   def get_data(%{"symbols" => symbols, "date" => date, "amount" => amount} = params) when is_list(symbols) do
@@ -22,15 +23,24 @@ defmodule Timeline.TradeData do
 
     history_url = @history_url <> "?symbol=#{parsed_symbols}&date=#{date}" <> @api_token
     Logger.info("HISTORY_URL: #{inspect(history_url)}")
+    actual_url = @actual_url <> "?symbol=#{parsed_symbols}" <> @api_token
+    Logger.info("ACTUAL_URL: #{inspect(actual_url)}")
 
-    case HTTPoison.get(history_url) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        body
+    with \
+      {:ok, %HTTPoison.Response{status_code: 200, body: history_body}} <- HTTPoison.get(history_url),
+      {:ok, %HTTPoison.Response{status_code: 200, body: actual_body}} <- HTTPoison.get(actual_url)
+    do
+      ab = actual_body
         |> Jason.decode!()
-        |> _parse_result(symbols, amount)
+        |> _parse_actual()
 
+      history_body
+      |> Jason.decode!()
+      |> _parse_result(symbols, amount)
+      |> _add_actual_price(ab)
+    else
       _other ->
-        {:error, "An error ocurred!"}
+        {:error, "An error ocurred fetching data!"}
     end
   end
   def get_data(_), do: {:error, "Can't process that request."}
@@ -57,8 +67,37 @@ defmodule Timeline.TradeData do
     {:ok, data}
   end
 
-  defp _parse_result(response, _, _ ) do 
+  defp _parse_result(response, _, _ ) do
     Logger.error("External API error: #{inspect(response)}")
+    {:error, "An error ocurred!"}
+  end
+
+  defp _parse_actual(%{"data" => data}) do
+    data
+    |> Enum.map(fn x ->
+      name = x["symbol"]
+      price = x["price"]
+      %{"name" => name, "price" => price}
+    end)
+  end
+
+  defp _parse_actual(response) do
+    Logger.error("External API error: #{inspect(response)}")
+    {:error, "An error ocurred!"}
+  end
+
+  defp _add_actual_price({:ok, data}, price_data) do
+    data = data
+      |> Enum.map(fn item ->
+        s = Enum.find(price_data, fn x ->
+          x["name"] == item["name"]
+        end)
+        Map.merge(item, %{"actual" => s["price"]})
+      end)
+    {:ok, data}
+  end
+
+  defp _add_actual_price(_, _ ) do
     {:error, "An error ocurred!"}
   end
 end

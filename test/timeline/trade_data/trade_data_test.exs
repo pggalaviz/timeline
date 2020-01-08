@@ -13,7 +13,7 @@ defmodule Timeline.TradeDataTest do
         "percentage" => 50
       },
       %{
-        "name" => "VOD",
+        "name" => "VOD.L",
         "percentage" => 50
       }
     ],
@@ -25,5 +25,6 @@ defmodule Timeline.TradeDataTest do
     assert {:ok, data} = TradeData.get_data(@params)
     assert length(data) == 2
     assert List.first(data)["amount"] == 61500
+    assert List.first(data)["actual"] != nil
   end
 end
