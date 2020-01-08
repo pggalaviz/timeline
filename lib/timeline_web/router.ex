@@ -20,7 +20,9 @@ defmodule TimelineWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", TimelineWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", TimelineWeb do
+    pipe_through :api
+
+    post "/", PageController, :submit
+  end
 end
