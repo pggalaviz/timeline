@@ -36,7 +36,22 @@ defmodule Timeline.TradeData do
   # Private Functions
   # =================
 
-  defp _parse_result(%{"data" => data}, _symbols, _full_amount) do
+  defp _parse_result(%{"data" => data}, symbols, amount) do
+    data = data
+      |> Map.to_list()
+      |> Enum.map(fn {name, content} ->
+        s = Enum.find(symbols, fn sym ->
+          sym["name"] == name
+        end)
+        a = Kernel.div((s["percentage"] * amount), 100)
+        {ci, _} = Float.parse(content["close"])
+        t = a 
+          |> Kernel./(ci)
+          |> Float.round(2)
+        Map.merge(content, %{"name" => name, "amount" => a, "total" => t})
+      end)
+      |> IO.inspect()
+
     {:ok, data}
   end
 

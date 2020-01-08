@@ -19,7 +19,7 @@ defmodule Timeline.TradeDataTest do
 
   test "Gets data from external API" do
     assert {:ok, data} = TradeData.get_data(@params)
-    assert data["TWTR"]["open"]
-    assert data["GOOG"]["close"]
+    assert length(data) == 2
+    assert List.first(data)["amount"] == 61500
   end
 end
